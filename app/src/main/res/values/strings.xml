@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">EtsyShop</string>
+    <string name="search">Search</string>
+    <string name="saved_list">Saved list</string>
+    <string name="submit">Submit</string>
+    <string name="set_category">Set category</string>
+
+
+
+</resources>

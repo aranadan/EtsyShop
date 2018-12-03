@@ -11,13 +11,15 @@ import android.widget.Button;
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
-import java.util.List;
+
 
 
 public class SearchTabFragment extends Fragment implements MvpView {
     private static final String TAG = "SearchTabFragment";
 
     private MvpPresenter presenter;
+
+    Button categoryButton;
 
 
     @Override
@@ -32,10 +34,10 @@ public class SearchTabFragment extends Fragment implements MvpView {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_search_tab, container, false);
 
-        presenter = new MainPresenter(this);
+        presenter = new MainPresenter(this, getActivity());
 
-        Button spinnerButton = view.findViewById(R.id.categorySpinner);
-        spinnerButton.setOnClickListener(view1 -> presenter.onSpinnerClick());
+        categoryButton = view.findViewById(R.id.categorySpinner);
+        categoryButton.setOnClickListener(view1 -> presenter.onSpinnerClick());
 
         Button submitButton = view.findViewById(R.id.submitButton);
         submitButton.setOnClickListener(view2 -> presenter.onSubmitClick());
@@ -43,11 +45,9 @@ public class SearchTabFragment extends Fragment implements MvpView {
         return view;
     }
 
+
     @Override
-    public void showCategory(List<Result> list) {
-        Log.d(TAG, "showCategory");
-        for (Result pageTitle : list) {
-            Log.d(TAG, pageTitle.getPageTitle());
-        }
+    public void showCategory(String category) {
+        categoryButton.setText(category);
     }
 }

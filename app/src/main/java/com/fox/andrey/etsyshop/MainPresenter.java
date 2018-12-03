@@ -1,5 +1,8 @@
 package com.fox.andrey.etsyshop;
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
 import com.fox.andrey.etsyshop.interfaces.EtsyApi;
@@ -19,22 +22,27 @@ public class MainPresenter implements MvpPresenter {
     private static final String TAG = "MainPresenter";
     private static final String BASE_URL = "https://openapi.etsy.com";
     private static final String KEY = "3wqphzh72t03m3pkyr8tle86";
-    ArrayList<Result> titlesList = new ArrayList<>();
+    private ArrayList categoryArray;
+
 
     //Компоненты MVP приложения
     private MvpView mView;
+    private Activity mActivity;
 
     //В конструктор передаю экземпляр представления
-    public MainPresenter(MvpView mView) {
-        this.mView = mView;
+    public MainPresenter(MvpView View, Activity activity) {
+        mView = View;
+        mActivity = activity;
+        categoryArray = new ArrayList();
         Log.d(TAG, "Constructor");
+        getCategory();
     }
 
     //View сообщает, что спинер был нажат
     @Override
     public void onSpinnerClick() {
         Log.d(TAG, "onSpinnerClick");
-        getCategory();
+       createDialog();
     }
 
     //View сообщает, что кнопка была нажата
@@ -42,7 +50,7 @@ public class MainPresenter implements MvpPresenter {
     public void onSubmitClick() {
         Log.d(TAG, "onSubmitClick");
     }
-
+    //загрузка списка категорий товаров
     private void getCategory(){
         Retrofit retrofit = new Retrofit.Builder().
                 baseUrl(BASE_URL).
@@ -56,6 +64,22 @@ public class MainPresenter implements MvpPresenter {
         pageTitle.
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).
-                subscribe(title -> titlesList.addAll(title.getResults()),throwable -> Log.d(TAG, throwable.getMessage()),() -> mView.showCategory(titlesList));
+                flatMap(pageTitle1 -> Observable.just(pageTitle1.getResults())).
+                flatMapIterable(list -> list).
+                map(item -> item.getPageTitle()).
+                subscribe(titleItem -> categoryArray.add(titleItem), throwable -> Log.d(TAG, throwable.getMessage()));
+    }
+
+
+    void createDialog() {
+        CharSequence[] sequences = (CharSequence[]) categoryArray.toArray(new CharSequence[categoryArray.size()]);
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.
+                setTitle(R.string.set_category).
+                setItems(sequences, (dialog, which) -> {
+                    String category = (String) sequences[which];
+                    mView.showCategory(category);
+                });
+        builder.create().show();
     }
 }

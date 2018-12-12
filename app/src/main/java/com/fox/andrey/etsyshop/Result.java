@@ -8,6 +8,7 @@ public class Result {
     /*@SerializedName("category_name")
     @Expose
     private String categoryName;*/
+
     @SerializedName("short_name")
     @Expose
     private String shortName;

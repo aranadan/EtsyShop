@@ -5,11 +5,17 @@ import android.util.Log;
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
+import java.util.ArrayList;
 
-public class SearchPresenter  implements MvpPresenter {
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+
+
+public class SearchPresenter implements MvpPresenter {
     private static final String TAG = "SearchPresenter";
     private NetworkManager networkManager;
-    private CharSequence[] listCategory;
+    private ArrayList<String> listCategory;
 
 
     //Компоненты MVP приложения
@@ -19,7 +25,8 @@ public class SearchPresenter  implements MvpPresenter {
     @Override
     public void onCategoryClick() {
         Log.d(TAG, "onCategoryClick");
-        searchView.createDialog(listCategory);
+        getCategorySequences();
+
     }
 
     //View сообщает, что кнопка была нажата
@@ -34,7 +41,6 @@ public class SearchPresenter  implements MvpPresenter {
         searchView = (SearchActivity) view;
         networkManager = new NetworkManager();
         networkManager.getApi();
-        listCategory = networkManager.getCategory();
     }
 
     @Override
@@ -42,7 +48,25 @@ public class SearchPresenter  implements MvpPresenter {
         searchView = null;
     }
 
+    //получаю список категория и вызываю диалог выбора категории по завершению
+    private void getCategorySequences() {
+        if (listCategory == null) {
 
+            listCategory = new ArrayList<>();
+
+            Observable<PageTitle> titleObservable = networkManager.getCategory();
+            titleObservable.
+                    subscribeOn(Schedulers.io()).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    // из PageTitle в Result
+                            flatMap(pageTitle1 -> Observable.just(pageTitle1.getResults())).
+                    // прохожу по каждому элементу списка
+                            flatMapIterable(list -> list).
+                    subscribe(titleItem -> listCategory.add(titleItem.getShortName()), throwable -> Log.d(TAG, throwable.getMessage()), () -> searchView.createDialog(listCategory.toArray(new CharSequence[0])));
+        }else{
+            searchView.createDialog(listCategory.toArray(new CharSequence[0]));
+        }
+    }
 
 
 }

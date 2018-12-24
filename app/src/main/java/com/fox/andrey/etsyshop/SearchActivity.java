@@ -9,10 +9,12 @@ import com.fox.andrey.etsyshop.interfaces.CallBackSearchActivity;
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
+import java.util.HashMap;
+
 
 public class SearchActivity extends AbstractView implements  MvpView, CallBackSearchActivity {
+    private static final String TAG = "SearchActivity";
     private MvpPresenter presenter;
-    private FragmentTransaction fragmentTransaction;
     private AlertDialog alertDialog;
     private String categoryName;
 
@@ -32,11 +34,11 @@ public class SearchActivity extends AbstractView implements  MvpView, CallBackSe
     }
 
     @Override
-    public void onSubmitClick(String category, String searchText) {
+    public void onSubmitClick(String searchText) {
         Intent intent = new Intent(getApplicationContext(), ListActivity.class);
+        intent.putExtra("category", categoryName);
+        intent.putExtra("searchText", searchText);
         startActivity(intent);
-
-        presenter.onSubmitClick(category, searchText);
     }
 
     @Override
@@ -53,15 +55,19 @@ public class SearchActivity extends AbstractView implements  MvpView, CallBackSe
     public Object onRetainCustomNonConfigurationInstance() {
         return presenter;
     }
+
     // строю диалог
-    void createDialog(CharSequence[] sequences) {
+    void createDialog(HashMap<String, String> map) {
+        CharSequence[] sequences = map.keySet().toArray(new CharSequence[0]);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.
                 setTitle(R.string.set_category).
                 setItems(sequences, (dialog, which) -> {
-                    categoryName = (String) sequences[which];
-                    showData(categoryName);
+                    //имя категории для запроса
+                    categoryName = map.get(sequences[which]);
+                    //отображаю выбраную категорию
+                    showData(sequences[which].toString());
                 });
         alertDialog = builder.create();
         alertDialog.show();
@@ -75,8 +81,9 @@ public class SearchActivity extends AbstractView implements  MvpView, CallBackSe
     }
 
     void createFragment(){
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.frameLayout, new SearchTabFragment());
         fragmentTransaction.commit();
     }
+
 }

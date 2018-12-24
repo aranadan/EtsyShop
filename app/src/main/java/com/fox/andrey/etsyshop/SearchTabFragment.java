@@ -45,7 +45,7 @@ public class SearchTabFragment extends Fragment {
         categoryButton.setOnClickListener(view1 -> callBackSearchActivity.onCategoryClick());
 
         Button submitButton = view.findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(view2 -> callBackSearchActivity.onSubmitClick(categoryButton.getText().toString(), searchText.getText().toString()));
+        submitButton.setOnClickListener(view2 -> callBackSearchActivity.onSubmitClick(searchText.getText().toString()));
 
         return view;
     }

@@ -12,8 +12,6 @@ public abstract class AbstractView extends AppCompatActivity implements MvpView{
 
     void showData(String category) {}
 
-    void showData(ArrayList<ActiveResult> list){}
-
     void attachPresenter() {
         presenter = (MvpPresenter) getLastCustomNonConfigurationInstance();
         if (presenter == null) {

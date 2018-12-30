@@ -1,15 +1,10 @@
 package com.fox.andrey.etsyshop;
 
-import android.util.Log;
 
 import com.fox.andrey.etsyshop.interfaces.EtsyApi;
 
 
-import java.util.ArrayList;
-
 import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
@@ -58,15 +53,8 @@ class NetworkManager {
         return etsyApi.getImage(listId, imageId, KEY);
     }
 
-    ArrayList<ImageItem>getAllImages(int listId){
-        ArrayList<ImageItem> list = new ArrayList<>();
-        etsyApi.getAllImages(listId, KEY)
-                .observeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(imagesResult -> Observable.just(imagesResult.getResults()))
-                .subscribe(results -> list.addAll(results),throwable -> Log.d(TAG, throwable.getMessage()));
-
-        return list;
+    Observable<ImagesResult> getAllImages(int listId){
+        return etsyApi.getAllImages(listId, KEY);
     }
 
 

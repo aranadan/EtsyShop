@@ -1,5 +1,7 @@
 package com.fox.andrey.etsyshop;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,11 +15,14 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     private ArrayList<ActiveResult> mList;
     public static final String TAG = "ListAdapter";
     private NetworkManager networkManager;
+    private Context mContext;
 
     // Определяю элементы представления
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -33,8 +38,10 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     }
 
 
-     ListAdapter(ArrayList<ActiveResult> list) {
+     ListAdapter(Context context, ArrayList<ActiveResult> list) {
         networkManager = new NetworkManager();
+        mContext = context;
+
 
         mList = list;
         Log.d(TAG,"Constructor");
@@ -55,13 +62,35 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     //устанавливаю значения полей
     @Override
     public void onBindViewHolder(MyViewHolder viewHolder, int i) {
-        ArrayList<ImageItem> imagesList;
+        Observable<ImagesResult> imagesList;
         ActiveResult item = mList.get(i);
 
         Log.d(TAG,"onBindViewHolder");
         viewHolder.mTextView.setText(item.getTitle());
+
+        //по клику на позицию вызываю новый интент
+        viewHolder.itemView.setOnClickListener(view -> {
+            Intent intent = new Intent(mContext, ItemDetails.class);
+            intent.putExtra("price", item.getPrice());
+            intent.putExtra("currency_code", item.getCurrencyCode());
+            intent.putExtra("title", item.getTitle());
+            intent.putExtra("description", item.getDescription());
+            intent.putExtra("listingId", item.getListingId());
+            mContext.startActivity(intent);
+        });
+
+        //получаю картинку
         imagesList = networkManager.getAllImages(item.getListingId());
-        Picasso.get().load(imagesList.get(i).getUrl170x135()).into(viewHolder.mImageView);
+        imagesList
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(imagesResult -> Observable.just(imagesResult.getResults()))
+                .subscribe(results ->{
+                            //загружаю с помощью пикассо картинку а ссылке
+                            Picasso.get().load(results.get(0).getUrl170x135()).into(viewHolder.mImageView);
+                    }
+                        ,throwable -> Log.d(TAG, throwable.getMessage()));
+
 
     }
 
@@ -71,6 +100,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
         Log.d(TAG,"getItemCount");
         return mList.size();
     }
+
 
 
 }

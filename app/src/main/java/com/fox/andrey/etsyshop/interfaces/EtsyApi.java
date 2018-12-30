@@ -6,6 +6,7 @@ import com.fox.andrey.etsyshop.ImagesResult;
 import com.fox.andrey.etsyshop.PageTitle;
 
 
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;

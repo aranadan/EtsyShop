@@ -53,7 +53,7 @@ public class ListActivity extends AppCompatActivity implements MvpView {
 
         // specify an adapter (see also next example)
         presenter.getActiveList(category, searchText);
-        mAdapter = new ListAdapter(activeResults = new ArrayList<>());
+        mAdapter = new ListAdapter(this, activeResults = new ArrayList<>());
         mRecyclerView.setAdapter(mAdapter);
 
 

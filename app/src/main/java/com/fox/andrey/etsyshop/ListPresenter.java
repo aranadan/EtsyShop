@@ -15,6 +15,15 @@ public class ListPresenter {
     private ArrayList<ActiveResult> results;
     private ListActivity listActivity;
     private boolean isDownloadNewData = false;
+    private int offset = 0;
+
+    public void resetOffset() {
+        Log.d(TAG,"resetOffset");
+        offset = 0;}
+
+    public void makeOffset() {
+        Log.d(TAG,"makeOffset");
+        offset = offset + 25;}
 
     ListPresenter(ListActivity listActivity) {
         this.listActivity = listActivity;
@@ -26,7 +35,7 @@ public class ListPresenter {
         results = new ArrayList<>();
         NetworkManager manager = new NetworkManager();
 
-        Observable<ActiveObject> active = manager.getActive(category, searchText);
+        Observable<ActiveObject> active = manager.getActive(category, searchText, offset);
         active.
                 subscribeOn(Schedulers.io()).
                 observeOn(AndroidSchedulers.mainThread()).

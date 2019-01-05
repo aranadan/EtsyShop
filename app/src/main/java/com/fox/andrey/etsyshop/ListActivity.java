@@ -68,13 +68,13 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0 && !presenter.isDownloading() /*&& totalItemCount >= PAGE_SIZE*/) {
                     Log.d(TAG, " load more data");
-                    onRefresh();
+                    presenter.makeOffset();
+                    //отправляю запрос
+                    presenter.getActiveList(category, searchText);
                 }
             }
             }
         });
-
-
 
         //отправляю запрос
         presenter.getActiveList(category, searchText);
@@ -87,6 +87,9 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
     @Override
     public void onRefresh() {
         Log.d(TAG, "onRefresh");
+
+        //сбрасываю смещение результатов
+        presenter.resetOffset();
 
         //получаю новые данные
         presenter.getActiveList(category, searchText);

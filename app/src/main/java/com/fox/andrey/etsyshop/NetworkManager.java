@@ -39,8 +39,8 @@ class NetworkManager {
     }
 
     //загрузка данных по запросу
-    Observable<ActiveObject> getActive(String category, String keywords) {
-        return etsyApi.getActive(KEY, category, keywords);
+    Observable<ActiveObject> getActive(String category, String keywords, int offset) {
+        return etsyApi.getActive(KEY, category, keywords, offset);
     }
 
     //Отправляю запрос на список категорий

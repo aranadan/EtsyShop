@@ -19,7 +19,7 @@ public interface EtsyApi {
 
     //запрос по ключевому слову
     @GET("listings/active")
-    Observable<ActiveObject> getActive(@Query("api_key") String key, @Query("category") String category, @Query("keywords") String keywords);
+    Observable<ActiveObject> getActive(@Query("api_key") String key, @Query("category") String category, @Query("keywords") String keywords, @Query("offset") int offset);
 
     //запрос на все фотографии
     @GET("listings/{listing_id}/images")

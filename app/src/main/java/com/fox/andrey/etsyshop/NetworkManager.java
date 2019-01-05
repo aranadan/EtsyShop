@@ -48,11 +48,6 @@ class NetworkManager {
         return etsyApi.getCategories(KEY);
     }
 
-    //Запрос на фотографию
-    Observable<Object>getImage(int listId, int imageId){
-        return etsyApi.getImage(listId, imageId, KEY);
-    }
-
     Observable<ImagesResult> getAllImages(int listId){
         return etsyApi.getAllImages(listId, KEY);
     }

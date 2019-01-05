@@ -3,10 +3,15 @@ package com.fox.andrey.etsyshop;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 public class ItemDetails extends AppCompatActivity {
     TextView priceTV, currencyCodeTV, titleTV, descriptionTv;
+    ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +26,8 @@ public class ItemDetails extends AppCompatActivity {
        currencyCodeTV.setText(intent.getStringExtra("currency_code"));
        titleTV.setText(intent.getStringExtra("title"));
        descriptionTv.setText(intent.getStringExtra("description"));
+       String url = intent.getStringExtra("photo_url");
+       Picasso.get().load(url).into(imageView);
     }
 
     void initializeView(){
@@ -28,5 +35,6 @@ public class ItemDetails extends AppCompatActivity {
         currencyCodeTV = findViewById(R.id.currencyCodeTV);
         titleTV = findViewById(R.id.titleTV);
         descriptionTv = findViewById(R.id.descriptionTV);
+        imageView = findViewById(R.id.imageDetail);
     }
 }

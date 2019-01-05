@@ -21,11 +21,11 @@
             android:background="@android:color/white"
             app:layout_constraintBottom_toTopOf="@+id/titleTV"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintTop_toBottomOf="@+id/imageDetail"
             app:srcCompat="@android:drawable/ic_menu_save" />
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/imageDetail"
             android:layout_width="wrap_content"
             android:layout_height="250dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -61,7 +61,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/titleTV"
             app:layout_constraintStart_toEndOf="@+id/currencyCodeTV"
-            app:layout_constraintTop_toBottomOf="@+id/imageView2"
+            app:layout_constraintTop_toBottomOf="@+id/imageDetail"
             tools:text="19.99" />
 
         <TextView

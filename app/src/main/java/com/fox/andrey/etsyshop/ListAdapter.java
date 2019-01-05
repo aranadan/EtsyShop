@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -65,6 +66,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
         Observable<ImagesResult> imagesList;
         ActiveResult item = mList.get(i);
 
+
+        AtomicReference<String> urlPhoto = new AtomicReference<>();
+
         Log.d(TAG,"onBindViewHolder");
         viewHolder.mTextView.setText(item.getTitle());
 
@@ -76,6 +80,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
             intent.putExtra("title", item.getTitle());
             intent.putExtra("description", item.getDescription());
             intent.putExtra("listingId", item.getListingId());
+            intent.putExtra("photo_url",urlPhoto.toString());
             mContext.startActivity(intent);
         });
 
@@ -86,8 +91,10 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(imagesResult -> Observable.just(imagesResult.getResults()))
                 .subscribe(results ->{
-                            //загружаю с помощью пикассо картинку а ссылке
-                            Picasso.get().load(results.get(0).getUrl170x135()).into(viewHolder.mImageView);
+                            //загружаю с помощью пикассо картинку по ссылке
+                            urlPhoto.set(results.get(0).getUrl570xN());
+                            Picasso.get().load(results.get(0).getUrl570xN()).into(viewHolder.mImageView);
+
                     }
                         ,throwable -> Log.d(TAG, throwable.getMessage()));
 

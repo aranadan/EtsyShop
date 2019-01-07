@@ -5,8 +5,6 @@ import android.support.v7.app.AppCompatActivity;
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
-import java.util.ArrayList;
-
 public abstract class AbstractView extends AppCompatActivity implements MvpView{
     MvpPresenter presenter;
 

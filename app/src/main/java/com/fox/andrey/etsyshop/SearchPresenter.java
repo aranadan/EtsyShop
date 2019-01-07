@@ -1,5 +1,10 @@
 package com.fox.andrey.etsyshop;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkRequest;
+import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
@@ -14,7 +19,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class SearchPresenter implements MvpPresenter {
     private static final String TAG = "SearchPresenter";
-    private NetworkManager networkManager;
     private HashMap<String, String> listCategory;
 
 
@@ -40,6 +44,7 @@ public class SearchPresenter implements MvpPresenter {
     @Override
     public void attachView(MvpView view){
         searchView = (SearchActivity) view;
+        isOnlineNew();
         getCategorySequences();
     }
 
@@ -51,7 +56,7 @@ public class SearchPresenter implements MvpPresenter {
     //получаю список категория
     private void getCategorySequences() {
             listCategory = new HashMap<>();
-            networkManager = new NetworkManager();
+        NetworkManager networkManager = new NetworkManager();
 
             Observable<PageTitle> titleObservable = networkManager.getCategory();
             titleObservable.
@@ -65,5 +70,30 @@ public class SearchPresenter implements MvpPresenter {
 
     }
 
+    // TODO: 07.01.2019 реализовать проверку интернет соединения при старте приложения 
+    //увдеомления о состоянии сети
+    void isOnlineNew(){
+        ConnectivityManager connectivityManager = (ConnectivityManager) searchView.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkRequest.Builder builder = new NetworkRequest.Builder();
+
+        connectivityManager.registerNetworkCallback(builder.build(),
+                new ConnectivityManager.NetworkCallback(){
+                    @Override
+                    public void onLost(Network network) {
+                        Snackbar.make(searchView.findViewById(R.id.frameLayout), "Lost Internet connection!", Snackbar.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onAvailable(Network network) {
+                        Log.d(TAG,"onAvailable");
+                    }
+
+                    @Override
+                    public void onUnavailable() {
+                        Log.d(TAG,"onUnavailable");
+                    }
+                });
+    }
 
 }

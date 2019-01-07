@@ -16,6 +16,7 @@ public class ListPresenter {
     private ListActivity listActivity;
     private boolean isDownloadNewData = false;
     private int offset = 0;
+    private final int offsetCount = 25;
 
     public void resetOffset() {
         Log.d(TAG,"resetOffset");
@@ -23,7 +24,7 @@ public class ListPresenter {
 
     public void makeOffset() {
         Log.d(TAG,"makeOffset");
-        offset = offset + 25;}
+        offset = offset + offsetCount;}
 
     ListPresenter(ListActivity listActivity) {
         this.listActivity = listActivity;
@@ -41,14 +42,28 @@ public class ListPresenter {
                 observeOn(AndroidSchedulers.mainThread()).
                 flatMap(activeObject -> Observable.just(activeObject.getResults())).
                 subscribe(result -> results.addAll(result), throwable -> Log.d(TAG, throwable.getMessage()), () -> {
-                    listActivity.activeResults.clear();
-                    listActivity.activeResults.addAll(results);
-                    listActivity.mAdapter.notifyDataSetChanged();
+                    //если этот запрос пагинация то список не очищаю
+                    if (offset == 0) refreshMethod();
+                    else paginationMethod();
                     isDownloadNewData = false;
                 });
     }
 
     boolean isDownloading(){
         return isDownloadNewData;
+    }
+
+    //обновление списка
+    void refreshMethod(){
+        listActivity.activeResults.clear();
+        listActivity.activeResults.addAll(results);
+        listActivity.mAdapter.notifyDataSetChanged();
+    }
+
+    //пагинация списка
+    void paginationMethod(){
+        int oldArraySize = listActivity.activeResults.size();
+        listActivity.activeResults.addAll(results);
+        listActivity.mAdapter.notifyItemRangeInserted(oldArraySize, offsetCount);
     }
 }

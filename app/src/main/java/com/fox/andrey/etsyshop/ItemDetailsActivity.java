@@ -7,9 +7,10 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.fox.andrey.etsyshop.interfaces.MvpView;
 import com.squareup.picasso.Picasso;
 
-public class ItemDetails extends AppCompatActivity {
+public class ItemDetailsActivity extends AppCompatActivity implements MvpView {
     TextView priceTV, currencyCodeTV, titleTV, descriptionTv;
     ImageView imageView;
 

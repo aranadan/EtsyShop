@@ -8,6 +8,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.fox.andrey.etsyshop.interfaces.MvpListPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
 
     String category;
     String searchText;
-    ListPresenter presenter;
+    MvpListPresenter presenter;
 
     @Override
     protected void onStart() {
@@ -43,7 +44,7 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
         mSwipeRefreshLayout = findViewById(R.id.swipeContainer);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        presenter = new ListPresenter(this);
+
 
         mRecyclerView = findViewById(R.id.my_recycler_view);
 
@@ -76,11 +77,13 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
             }
         });
 
-        //отправляю запрос
-        presenter.getActiveList(category, searchText);
-
         mAdapter = new ListAdapter(this, activeResults = new ArrayList<>());
         mRecyclerView.setAdapter(mAdapter);
+
+        attachPresenter(category, searchText);
+
+       /* //отправляю запрос
+        presenter.getActiveList(category, searchText);*/
 
     }
 
@@ -96,5 +99,21 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
 
         // Отменяем анимацию обновления
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    private void attachPresenter(String category, String searchText) {
+        //получаю ранее сохраненный экземпляр презентера
+        presenter = (MvpListPresenter) getLastCustomNonConfigurationInstance();
+
+        if (presenter == null) {
+            presenter = new ListPresenter(category, searchText);
+        }else presenter.getLocalList();
+        presenter.attachView(this);
+    }
+
+    //сохраняю презентер
+    @Override
+    public Object onRetainCustomNonConfigurationInstance() {
+        return presenter;
     }
 }

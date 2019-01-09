@@ -74,7 +74,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
 
         //по клику на позицию вызываю новый интент
         viewHolder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext, ItemDetails.class);
+            Intent intent = new Intent(mContext, ItemDetailsActivity.class);
             intent.putExtra("price", item.getPrice());
             intent.putExtra("currency_code", item.getCurrencyCode());
             intent.putExtra("title", item.getTitle());

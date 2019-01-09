@@ -2,7 +2,9 @@ package com.fox.andrey.etsyshop;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,17 +12,14 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.fox.andrey.etsyshop.interfaces.CallBackSearchActivity;
+import com.fox.andrey.etsyshop.interfaces.MvpView;
 
 
-
-
-public class SearchTabFragment extends Fragment {
+public class SearchTabFragment extends Fragment implements MvpView {
     private static final String TAG = "SearchTabFragment";
-
-    CallBackSearchActivity callBackSearchActivity;
-
-
+    private CallBackSearchActivity callBackSearchActivity;
     private Button categoryButton;
+    private final String category = "category";
 
     @Override
     public void onAttach(Context context) {
@@ -45,15 +44,15 @@ public class SearchTabFragment extends Fragment {
         categoryButton.setOnClickListener(view1 -> callBackSearchActivity.onCategoryClick());
 
         Button submitButton = view.findViewById(R.id.submitButton);
-        submitButton.setOnClickListener(view2 -> callBackSearchActivity.onSubmitClick(searchText.getText().toString()));
+        submitButton.setOnClickListener(view2 -> callBackSearchActivity.onSubmitClick(searchText.getText().toString(), categoryButton.getText().toString()));
 
         return view;
     }
 
-
     public void showCategory(String category) {
-        categoryButton.setText(category);
+        if (categoryButton != null) {
+            categoryButton.setText(category);
+        }
     }
-
 
 }

@@ -1,6 +1,6 @@
 package com.fox.andrey.etsyshop.interfaces;
 
-public interface CallBackSearchActivity {
+public interface CallBackSearchTab {
     void onCategoryClick();
     void onSubmitClick(String searchText, String category);
 }

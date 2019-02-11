@@ -4,24 +4,35 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 import com.squareup.picasso.Picasso;
 
-public class ItemDetailsActivity extends AppCompatActivity implements MvpView {
+public class ItemDetailsActivity extends AppCompatActivity implements MvpView, View.OnClickListener {
     TextView priceTV, currencyCodeTV, titleTV, descriptionTv;
     ImageView imageView;
+    ImageButton saveButton;
+    ItemDetailsPresenter presenter;
+    Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_details);
 
-       Intent intent =  getIntent();
+       intent =  getIntent();
+
+
 
        initializeView();
+
+       presenter = new ItemDetailsPresenter();
+       presenter.attachView(this);
+
 
        priceTV.setText(intent.getStringExtra("price"));
        currencyCodeTV.setText(intent.getStringExtra("currency_code"));
@@ -37,5 +48,13 @@ public class ItemDetailsActivity extends AppCompatActivity implements MvpView {
         titleTV = findViewById(R.id.titleTV);
         descriptionTv = findViewById(R.id.descriptionTV);
         imageView = findViewById(R.id.imageDetail);
+        saveButton = findViewById(R.id.saveButton);
+        saveButton.setOnClickListener(this);
+    }
+
+
+    @Override
+    public void onClick(View view) {
+        presenter.onClick();
     }
 }

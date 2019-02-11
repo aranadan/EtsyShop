@@ -2,30 +2,26 @@ package com.fox.andrey.etsyshop;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.fox.andrey.etsyshop.interfaces.CallBackSearchActivity;
+import com.fox.andrey.etsyshop.interfaces.CallBackSearchTab;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
 
 public class SearchTabFragment extends Fragment implements MvpView {
-    private static final String TAG = "SearchTabFragment";
-    private CallBackSearchActivity callBackSearchActivity;
+    private CallBackSearchTab callBackSearchActivity;
     private Button categoryButton;
-    private final String category = "category";
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        callBackSearchActivity = (CallBackSearchActivity) context;
+        callBackSearchActivity = (CallBackSearchTab) context;
     }
 
     @Override

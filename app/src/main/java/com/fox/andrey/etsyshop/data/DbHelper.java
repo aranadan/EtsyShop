@@ -3,6 +3,7 @@ package com.fox.andrey.etsyshop.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import static com.fox.andrey.etsyshop.data.DbContract.*;
 
@@ -27,14 +28,13 @@ public class DbHelper extends SQLiteOpenHelper {
                 + ItemsEntry.TABLE_NAME + " ("
                 + ItemsEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + ItemsEntry.COLUMN_PRICE + " REAL NOT NULL, "
-                + ItemsEntry.COLUMN_CURRNET_CODE + " TEXT NOT NULL, "
+                + ItemsEntry.COLUMN_CURRENT_CODE + " TEXT NOT NULL, "
                 + ItemsEntry.COLUMN_TITLE + " TEXT NOT NULL, "
                 + ItemsEntry.COLUMN_DESCRIPTION + " TEXT NOT NULL, "
-                + ItemsEntry.COLUMN_IMAGE + " BLOD NOT NULL); ";
+                + ItemsEntry.COLUMN_LISTING_ID + " INTEGER NOT NULL); ";
 
         // Запускаем создание таблицы
         sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
-
     }
 
     /**

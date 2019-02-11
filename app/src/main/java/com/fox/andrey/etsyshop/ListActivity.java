@@ -17,7 +17,6 @@ import java.util.ArrayList;
 public class ListActivity extends AppCompatActivity implements MvpView, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ListActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    protected RecyclerView mRecyclerView;
     protected RecyclerView.Adapter mAdapter;
     ArrayList<ActiveResult> activeResults;
 
@@ -45,8 +44,7 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
 
-
-        mRecyclerView = findViewById(R.id.my_recycler_view);
+        RecyclerView mRecyclerView = findViewById(R.id.my_recycler_view);
 
         //Если вы уверены, что размер RecyclerView не будет изменяться, вы можете добавить этот код для улучшения производительности:
         mRecyclerView.setHasFixedSize(true);

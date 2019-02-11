@@ -159,7 +159,7 @@ public class ActiveResult implements Serializable {
         return listingId;
     }
 
-    public void setListingId(Integer listingId) {
+    public void setListingId(int listingId) {
         this.listingId = listingId;
     }
 

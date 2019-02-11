@@ -1,6 +1,8 @@
 package com.fox.andrey.etsyshop;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
@@ -8,10 +10,14 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
-import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
+import com.fox.andrey.etsyshop.data.DbContract;
+import com.fox.andrey.etsyshop.data.DbHelper;
+import com.fox.andrey.etsyshop.interfaces.MvpSearchPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -19,12 +25,15 @@ import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
+import static com.fox.andrey.etsyshop.data.DbContract.*;
 
-public class SearchPresenter implements MvpPresenter {
+
+public class SearchPresenter implements MvpSearchPresenter {
     private static final String TAG = "SearchPresenter";
     private HashMap<String, String> listCategory;
     private String selectedCategoryName;
     private AlertDialog alertDialog;
+    private FragmentTransaction fragmentTransaction;
     //Компоненты MVP приложения
     private SearchActivity searchView;
 
@@ -32,10 +41,7 @@ public class SearchPresenter implements MvpPresenter {
     public void attachView(MvpView view) {
         searchView = (SearchActivity) view;
         isOnlineNew();
-        createFragment();
-
-        //отображаю выбранную категорию
-        //showData(selectedCategoryName);
+        createSearchTab();
     }
 
     @Override
@@ -45,6 +51,30 @@ public class SearchPresenter implements MvpPresenter {
             alertDialog.dismiss();
         }
         searchView = null;
+    }
+
+    @Override
+    public void createSearchTab() {
+        SearchTabFragment fragment = new SearchTabFragment();
+        fragmentTransaction = searchView.getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
+
+        // TODO: 09.01.2019 присвоить имя категории при повороте экрана
+        if (selectedCategoryName != null){
+            fragment.showCategory(selectedCategoryName);
+            Log.d(TAG,selectedCategoryName);
+        }
+    }
+
+    @Override
+    public void createSavedListTab() {
+        Toast.makeText(searchView, "create list",Toast.LENGTH_SHORT).show();
+        SavedListTabFragment fragment = new SavedListTabFragment();
+        fragmentTransaction = searchView.getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
+
     }
 
     //получаю список категория
@@ -119,22 +149,50 @@ public class SearchPresenter implements MvpPresenter {
         }
     }
 
-    private void createFragment(){
-        SearchTabFragment fragment = new SearchTabFragment();
-        FragmentTransaction fragmentTransaction = searchView.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.frameLayout, fragment);
-        fragmentTransaction.commit();
-
-        // TODO: 09.01.2019 присвоить имя категории при повороте экрана
-        if (selectedCategoryName != null){
-            fragment.showCategory(selectedCategoryName);
-            Log.d(TAG,selectedCategoryName);
-        }
-    }
-
     @Override
     public void onClick() {
         getCategorySequences();
+    }
+
+    @Override
+   public ArrayList<ActiveResult> getSavedList(){
+        ArrayList<ActiveResult> list = new ArrayList<>();
+        DbHelper mDbHelper = new DbHelper(searchView);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        String[] columns = {ItemsEntry._ID, ItemsEntry.COLUMN_CURRENT_CODE, ItemsEntry.COLUMN_DESCRIPTION, ItemsEntry.COLUMN_PRICE,  ItemsEntry.COLUMN_TITLE, ItemsEntry.COLUMN_LISTING_ID };
+
+        Cursor cursor = db.query(
+                ItemsEntry.TABLE_NAME,   // таблица
+                columns,                        // столбцы
+                null,                  // столбцы для условия WHERE
+                null,               // значения для условия WHERE
+                null,                   // Don't group the rows
+                null,                    // Don't filter by row groups
+                null);                  // порядок сортировки
+
+// Узнаем индекс каждого столбца
+        int idIndex = cursor.getColumnIndex(ItemsEntry._ID);
+        int priceIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_PRICE);
+        int codeIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_CURRENT_CODE);
+        int titleIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_TITLE);
+        int descriptionIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_DESCRIPTION);
+        int listingIdIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_LISTING_ID);
+
+// Проходим через все ряды
+while (cursor.moveToNext()){
+
+    ActiveResult activeResult = new ActiveResult();
+    activeResult.setCategoryId(cursor.getInt(idIndex));
+    activeResult.setPrice(cursor.getString(priceIndex));
+    activeResult.setCurrencyCode(cursor.getString(codeIndex));
+    activeResult.setTitle(cursor.getString(titleIndex));
+    activeResult.setDescription(cursor.getString(descriptionIndex));
+    activeResult.setListingId(cursor.getInt(listingIdIndex));
+
+    list.add(activeResult);
+}
+
+        return list;
     }
 
 }

@@ -23,8 +23,6 @@ public class ItemDetailsPresenter  implements MvpPresenter {
     @Override
     public void attachView(MvpView view) {
         this.view = (ItemDetailsActivity) view;
-
-
     }
 
     @Override

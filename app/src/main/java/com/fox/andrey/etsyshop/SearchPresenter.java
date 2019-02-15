@@ -7,12 +7,9 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkRequest;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.widget.Toast;
 
-import com.fox.andrey.etsyshop.data.DbContract;
 import com.fox.andrey.etsyshop.data.DbHelper;
 import com.fox.andrey.etsyshop.interfaces.MvpSearchPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
@@ -33,7 +30,7 @@ public class SearchPresenter implements MvpSearchPresenter {
     private HashMap<String, String> listCategory;
     private String selectedCategoryName;
     private AlertDialog alertDialog;
-    private FragmentTransaction fragmentTransaction;
+
     //Компоненты MVP приложения
     private SearchActivity searchView;
 
@@ -41,7 +38,6 @@ public class SearchPresenter implements MvpSearchPresenter {
     public void attachView(MvpView view) {
         searchView = (SearchActivity) view;
         isOnlineNew();
-        createSearchTab();
     }
 
     @Override
@@ -51,30 +47,6 @@ public class SearchPresenter implements MvpSearchPresenter {
             alertDialog.dismiss();
         }
         searchView = null;
-    }
-
-    @Override
-    public void createSearchTab() {
-        SearchTabFragment fragment = new SearchTabFragment();
-        fragmentTransaction = searchView.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
-        fragmentTransaction.commit();
-
-        // TODO: 09.01.2019 присвоить имя категории при повороте экрана
-        if (selectedCategoryName != null){
-            fragment.showCategory(selectedCategoryName);
-            Log.d(TAG,selectedCategoryName);
-        }
-    }
-
-    @Override
-    public void createSavedListTab() {
-        Toast.makeText(searchView, "create list",Toast.LENGTH_SHORT).show();
-        SavedListTabFragment fragment = new SavedListTabFragment();
-        fragmentTransaction = searchView.getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.frameLayout, fragment);
-        fragmentTransaction.commit();
-
     }
 
     //получаю список категория
@@ -93,7 +65,7 @@ public class SearchPresenter implements MvpSearchPresenter {
                     // прохожу по каждому элементу списка
                             flatMapIterable(list -> list).
                     subscribe(titleItem -> listCategory.put(titleItem.getShortName(), titleItem.getCategoryName()), throwable -> Log.d(TAG, throwable.getMessage()), () -> createDialog(listCategory));
-        }else {
+        } else {
             Log.d(TAG, "download list from storage");
             createDialog(listCategory);
         }
@@ -101,28 +73,27 @@ public class SearchPresenter implements MvpSearchPresenter {
 
     // TODO: 07.01.2019 реализовать проверку интернет соединения при старте приложения 
     //увдеомления о состоянии сети
-    private void isOnlineNew(){
+    private void isOnlineNew() {
         ConnectivityManager connectivityManager = (ConnectivityManager) searchView.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkRequest.Builder builder = new NetworkRequest.Builder();
 
-        connectivityManager.registerNetworkCallback(builder.build(),
-                new ConnectivityManager.NetworkCallback(){
-                    @Override
-                    public void onLost(Network network) {
-                        Snackbar.make(searchView.findViewById(R.id.frameLayout), "Lost Internet connection!", Snackbar.LENGTH_LONG).show();
-                    }
+        connectivityManager.registerNetworkCallback(builder.build(), new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onLost(Network network) {
+                Snackbar.make(searchView.findViewById(R.id.frameLayout), "Lost Internet connection!", Snackbar.LENGTH_LONG).show();
+            }
 
-                    @Override
-                    public void onAvailable(Network network) {
-                        Log.d(TAG,"onAvailable");
-                    }
+            @Override
+            public void onAvailable(Network network) {
+                Log.d(TAG, "onAvailable");
+            }
 
-                    @Override
-                    public void onUnavailable() {
-                        Log.d(TAG,"onUnavailable");
-                    }
-                });
+            @Override
+            public void onUnavailable() {
+                Log.d(TAG, "onUnavailable");
+            }
+        });
     }
 
     // строю диалог
@@ -155,14 +126,13 @@ public class SearchPresenter implements MvpSearchPresenter {
     }
 
     @Override
-   public ArrayList<ActiveResult> getSavedList(){
+    public ArrayList<ActiveResult> getSavedList() {
         ArrayList<ActiveResult> list = new ArrayList<>();
         DbHelper mDbHelper = new DbHelper(searchView);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        String[] columns = {ItemsEntry._ID, ItemsEntry.COLUMN_CURRENT_CODE, ItemsEntry.COLUMN_DESCRIPTION, ItemsEntry.COLUMN_PRICE,  ItemsEntry.COLUMN_TITLE, ItemsEntry.COLUMN_LISTING_ID };
+        String[] columns = {ItemsEntry._ID, ItemsEntry.COLUMN_CURRENT_CODE, ItemsEntry.COLUMN_DESCRIPTION, ItemsEntry.COLUMN_PRICE, ItemsEntry.COLUMN_TITLE, ItemsEntry.COLUMN_LISTING_ID};
 
-        Cursor cursor = db.query(
-                ItemsEntry.TABLE_NAME,   // таблица
+        Cursor cursor = db.query(ItemsEntry.TABLE_NAME,   // таблица
                 columns,                        // столбцы
                 null,                  // столбцы для условия WHERE
                 null,               // значения для условия WHERE
@@ -179,20 +149,18 @@ public class SearchPresenter implements MvpSearchPresenter {
         int listingIdIndex = cursor.getColumnIndex(ItemsEntry.COLUMN_LISTING_ID);
 
 // Проходим через все ряды
-while (cursor.moveToNext()){
+        while (cursor.moveToNext()) {
 
-    ActiveResult activeResult = new ActiveResult();
-    activeResult.setCategoryId(cursor.getInt(idIndex));
-    activeResult.setPrice(cursor.getString(priceIndex));
-    activeResult.setCurrencyCode(cursor.getString(codeIndex));
-    activeResult.setTitle(cursor.getString(titleIndex));
-    activeResult.setDescription(cursor.getString(descriptionIndex));
-    activeResult.setListingId(cursor.getInt(listingIdIndex));
+            ActiveResult activeResult = new ActiveResult();
+            activeResult.setCategoryId(cursor.getInt(idIndex));
+            activeResult.setPrice(cursor.getString(priceIndex));
+            activeResult.setCurrencyCode(cursor.getString(codeIndex));
+            activeResult.setTitle(cursor.getString(titleIndex));
+            activeResult.setDescription(cursor.getString(descriptionIndex));
+            activeResult.setListingId(cursor.getInt(listingIdIndex));
 
-    list.add(activeResult);
-}
-
+            list.add(activeResult);
+        }
         return list;
     }
-
 }

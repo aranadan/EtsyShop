@@ -3,37 +3,44 @@ package com.fox.andrey.etsyshop;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.fox.andrey.etsyshop.interfaces.CallBackSavedItemsTab;
 import com.fox.andrey.etsyshop.interfaces.CallBackSearchTab;
+import com.fox.andrey.etsyshop.interfaces.CallIntent;
 import com.fox.andrey.etsyshop.interfaces.MvpSearchPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
 import java.util.ArrayList;
 
 
-public class SearchActivity extends AppCompatActivity implements  MvpView, CallBackSearchTab, CallBackSavedItemsTab {
+public class SearchActivity extends AppCompatActivity implements  MvpView, CallIntent, CallBackSearchTab, CallBackSavedItemsTab {
     private static final String TAG = "SearchActivity";
     private MvpSearchPresenter presenter;
     TabLayout tabLayout;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
+        // TODO: 16.02.2019 решить как запускать первый фрагмент 
+        //при первой загрузке загружаю вкладку поиска
+        //createSearchTab();
 
-        //загрузка фрагментов
+        //загрузка фрагментов по выбору пользователя
         tabLayout = findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
 
                 if (tab.getPosition() == 0)
-                    presenter.createSearchTab();
+                    createSearchTab();
                 else
-                    presenter.createSavedListTab();
+                    createSavedListTab();
             }
 
             @Override
@@ -88,6 +95,27 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallB
     public ArrayList<ActiveResult> getSavedList() {
 
         return presenter.getSavedList();
+    }
+
+    @Override
+    public void onSavedItemClick(ActiveResult item, String urlPhoto) {
+
+    }
+
+    public void createSavedListTab() {
+        SavedListTabFragment fragment = new SavedListTabFragment();
+        replaceFragment(fragment);
+    }
+
+    public void createSearchTab() {
+        SearchTabFragment fragment = new SearchTabFragment();
+        replaceFragment(fragment);
+    }
+
+    void replaceFragment(Fragment fragment){
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.frameLayout, fragment);
+        fragmentTransaction.commit();
     }
 
 }

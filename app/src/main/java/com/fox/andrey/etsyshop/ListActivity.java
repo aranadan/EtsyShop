@@ -1,5 +1,6 @@
 package com.fox.andrey.etsyshop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -8,13 +9,14 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
+import com.fox.andrey.etsyshop.interfaces.CallIntent;
 import com.fox.andrey.etsyshop.interfaces.MvpListPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
 import java.util.ArrayList;
 
 
-public class ListActivity extends AppCompatActivity implements MvpView, SwipeRefreshLayout.OnRefreshListener {
+public class ListActivity extends AppCompatActivity implements MvpView, CallIntent, SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = "ListActivity";
     private SwipeRefreshLayout mSwipeRefreshLayout;
     protected RecyclerView.Adapter mAdapter;
@@ -43,14 +45,13 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
         mSwipeRefreshLayout = findViewById(R.id.swipeContainer);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-
         RecyclerView mRecyclerView = findViewById(R.id.my_recycler_view);
 
         //Если вы уверены, что размер RecyclerView не будет изменяться, вы можете добавить этот код для улучшения производительности:
         mRecyclerView.setHasFixedSize(true);
 
         // менеджер компоновки для управления позиционированием своих элементов
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //слушатель на прокрутку списка
@@ -79,10 +80,6 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
         mRecyclerView.setAdapter(mAdapter);
 
         attachPresenter(category, searchText);
-
-       /* //отправляю запрос
-        presenter.getActiveList(category, searchText);*/
-
     }
 
     @Override
@@ -114,4 +111,18 @@ public class ListActivity extends AppCompatActivity implements MvpView, SwipeRef
     public Object onRetainCustomNonConfigurationInstance() {
         return presenter;
     }
+
+    @Override
+    public void onSavedItemClick(ActiveResult item, String urlPhoto) {
+        Intent intent = new Intent(ListActivity.this, ItemDetailsActivity.class);
+        intent.putExtra("price", item.getPrice());
+        intent.putExtra("currency_code", item.getCurrencyCode());
+        intent.putExtra("title", item.getTitle());
+        intent.putExtra("description", item.getDescription());
+        intent.putExtra("listingId", item.getListingId());
+        intent.putExtra("photo_url",urlPhoto);
+        startActivity(intent);
+    }
+
+
 }

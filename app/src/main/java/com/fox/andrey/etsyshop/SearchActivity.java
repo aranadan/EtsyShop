@@ -6,6 +6,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.fox.andrey.etsyshop.interfaces.CallBackSavedItemsTab;
 import com.fox.andrey.etsyshop.interfaces.CallBackSearchTab;
@@ -20,16 +21,11 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
     private static final String TAG = "SearchActivity";
     private MvpSearchPresenter presenter;
     TabLayout tabLayout;
-    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        // TODO: 16.02.2019 решить как запускать первый фрагмент 
-        //при первой загрузке загружаю вкладку поиска
-        //createSearchTab();
 
         //загрузка фрагментов по выбору пользователя
         tabLayout = findViewById(R.id.tabs);
@@ -44,14 +40,10 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
             }
 
             @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabUnselected(TabLayout.Tab tab) {}
 
             @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
+            public void onTabReselected(TabLayout.Tab tab) {}
         });
 
         attachPresenter();
@@ -62,6 +54,8 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
         presenter = (MvpSearchPresenter) getLastCustomNonConfigurationInstance();
         if (presenter == null) {
             presenter = new SearchPresenter();
+            //при первой загрузке загружаю вкладку поиска
+            createSearchTab();
         }
         presenter.attachView(this);
     }
@@ -93,13 +87,7 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
 
     @Override
     public ArrayList<ActiveResult> getSavedList() {
-
         return presenter.getSavedList();
-    }
-
-    @Override
-    public void onSavedItemClick(ActiveResult item, String urlPhoto) {
-
     }
 
     public void createSavedListTab() {
@@ -113,7 +101,7 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
     }
 
     void replaceFragment(Fragment fragment){
-        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit();
     }

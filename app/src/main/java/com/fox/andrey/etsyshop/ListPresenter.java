@@ -2,6 +2,7 @@ package com.fox.andrey.etsyshop;
 
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.fox.andrey.etsyshop.interfaces.MvpListPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
@@ -21,23 +22,24 @@ public class ListPresenter implements MvpListPresenter {
     private int offset = 0;
     private final int offsetCount = 25;
 
-     ListPresenter(String category, String searchText) {
-        getActiveList(category,searchText);
+    ListPresenter(String category, String searchText) {
+        getActiveList(category, searchText);
     }
 
     public void resetOffset() {
-        Log.d(TAG,"resetOffset");
+        Log.d(TAG, "resetOffset");
         offset = 0;
     }
 
     public void makeOffset() {
-        Log.d(TAG,"makeOffset");
-        offset = offset + offsetCount;}
+        Log.d(TAG, "makeOffset");
+        offset = offset + offsetCount;
+    }
 
     // TODO: 09.01.2019 отобразить локальный список при повороте экрана
     @Override
     public void getLocalList() {
-        Log.d(TAG,"get date from storage " + results.size());
+        Log.d(TAG, "get date from storage " + results.size());
         refreshMethod();
     }
 
@@ -68,19 +70,20 @@ public class ListPresenter implements MvpListPresenter {
         else paginationMethod();
     }
 
-    public boolean isDownloading(){
+    public boolean isDownloading() {
         return isDownloadNewData;
     }
 
     //обновление списка
-   private void refreshMethod(){
+    private void refreshMethod() {
         listActivity.activeResults.clear();
         listActivity.activeResults.addAll(results);
         listActivity.mAdapter.notifyDataSetChanged();
     }
 
     //пагинация списка
-   private void paginationMethod(){
+    private void paginationMethod() {
+        Toast.makeText(listActivity, "start pagination", Toast.LENGTH_SHORT).show();
         int oldArraySize = listActivity.activeResults.size();
         listActivity.activeResults.addAll(results);
         listActivity.mAdapter.notifyItemRangeInserted(oldArraySize, offsetCount);

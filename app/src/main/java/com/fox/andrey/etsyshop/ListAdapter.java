@@ -1,5 +1,6 @@
 package com.fox.andrey.etsyshop;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +24,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     private ArrayList<ActiveResult> mList;
     public static final String TAG = "ListAdapter";
     private NetworkManager networkManager;
-    private Context mContext;
+    private Activity mActivity;
 
     // Определяю элементы представления
     public static class MyViewHolder extends RecyclerView.ViewHolder {
@@ -38,9 +39,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
         }
     }
 
-    ListAdapter(Context context, ArrayList<ActiveResult> list) {
+    ListAdapter(Activity context, ArrayList<ActiveResult> list) {
         networkManager = new NetworkManager();
-        mContext = context;
+        mActivity = context;
         mList = list;
         Log.d(TAG, "Constructor");
     }
@@ -68,8 +69,8 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
 
         //по клику на позицию вызываю новый интент
         viewHolder.itemView.setOnClickListener(view -> {
-            CallIntent callIntent = (CallIntent) mContext;
-            callIntent.onSavedItemClick(item, urlPhoto.toString());
+            CallIntent callIntent = (CallIntent) mActivity;
+            callIntent.onSavedItemClick(item, urlPhoto.toString(),mActivity);
         });
 
         //получаю картинку

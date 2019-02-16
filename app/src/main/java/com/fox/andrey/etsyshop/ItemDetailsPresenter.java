@@ -4,25 +4,24 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
-import com.fox.andrey.etsyshop.data.DbContract;
 import com.fox.andrey.etsyshop.data.DbHelper;
 import com.fox.andrey.etsyshop.interfaces.MvpPresenter;
 import com.fox.andrey.etsyshop.interfaces.MvpView;
 
-public class ItemDetailsPresenter  implements MvpPresenter {
+import static com.fox.andrey.etsyshop.data.DbContract.ItemsEntry.*;
+
+public class ItemDetailsPresenter implements MvpPresenter {
     private ItemDetailsActivity view;
     private DbHelper mDbHelper;
+    private SQLiteDatabase db;
 
 
-    @Override
-    public void onClick() {
-        mDbHelper = new DbHelper(view);
-        insertValue();
-    }
+
 
     @Override
     public void attachView(MvpView view) {
         this.view = (ItemDetailsActivity) view;
+        mDbHelper = new DbHelper(this.view);
     }
 
     @Override
@@ -30,23 +29,22 @@ public class ItemDetailsPresenter  implements MvpPresenter {
         mDbHelper.close();
     }
 
-    // TODO: 23.01.2019 решить как сохранять картинку
-    private void insertValue(){
+    @Override
+    public void addData(int id) {
         // получаем базу
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db = mDbHelper.getWritableDatabase();
 
-        int listingId = view.intent.getIntExtra("listingId",0);
         // Создаем объект ContentValues, где имена столбцов ключи,
         // а информация о является значениями ключей
         ContentValues values = new ContentValues();
-        values.put(DbContract.ItemsEntry.COLUMN_CURRENT_CODE, view.currencyCodeTV.getText().toString());
-        values.put(DbContract.ItemsEntry.COLUMN_PRICE,view.priceTV.getText().toString());
-        values.put(DbContract.ItemsEntry.COLUMN_DESCRIPTION,view.descriptionTv.getText().toString());
-        values.put(DbContract.ItemsEntry.COLUMN_TITLE,view.titleTV.getText().toString());
-        values.put(DbContract.ItemsEntry.COLUMN_LISTING_ID,listingId);
+        values.put(COLUMN_CURRENT_CODE, view.currencyCodeTV.getText().toString());
+        values.put(COLUMN_PRICE, view.priceTV.getText().toString());
+        values.put(COLUMN_DESCRIPTION, view.descriptionTv.getText().toString());
+        values.put(COLUMN_TITLE, view.titleTV.getText().toString());
+        values.put(COLUMN_LISTING_ID, id);
 
         // Вставляем новый ряд в базу данных и запоминаем его идентификатор
-        long newRowId = db.insert(DbContract.ItemsEntry.TABLE_NAME, null, values);
+        long newRowId = db.insert(TABLE_NAME, null, values);
 
         // Выводим сообщение в успешном случае или при ошибке
         if (newRowId == -1) {
@@ -55,6 +53,12 @@ public class ItemDetailsPresenter  implements MvpPresenter {
         } else {
             Toast.makeText(view, "Карточка заведена под номером: " + newRowId, Toast.LENGTH_SHORT).show();
         }
-
     }
+
+    @Override
+    public void deleteData(int id) {
+        mDbHelper.getWritableDatabase().delete(TABLE_NAME, COLUMN_LISTING_ID + "=" + id,null);
+    }
+
+
 }

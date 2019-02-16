@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.fox.andrey.etsyshop.interfaces.CallBackSavedItemsTab;
 
 public class SavedListTabFragment extends Fragment {
     CallBackSavedItemsTab callBack;
+    RecyclerView mRecyclerView;
 
     @Override
     public void onAttach(Context context) {
@@ -28,15 +31,76 @@ public class SavedListTabFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_list, container, false);
 
-        RecyclerView mRecyclerView = view.findViewById(R.id.my_recycler_view);
+        SwipeRefreshLayout swipeRefreshLayout = view.findViewById(R.id.swipeContainer);
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setRefreshing(false);
+
+        mRecyclerView = view.findViewById(R.id.my_recycler_view);
 
         //Если вы уверены, что размер RecyclerView не будет изменяться, вы можете добавить этот код для улучшения производительности:
         mRecyclerView.setHasFixedSize(true);
 
         // менеджер компоновки для управления позиционированием своих элементов
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.setAdapter(new ListAdapter(getActivity(),callBack.getSavedList()));
+        //mRecyclerView.setAdapter(new ListAdapter(getActivity(),callBack.getSavedList()));
 
         return view;
+    }
+
+    // TODO: 16.02.2019 модернизировать обновление списка позиций в адаптере путем обновления адаптер, вместо пересозания адаптера 
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d("SavedListTabFragment", "onResume");
+        //каждый раз когда возвращаюсь к фрагменту пересоздаю адаптер, что б обновлять список удаленных продуктов
+        mRecyclerView.setAdapter(new ListAdapter(getActivity(),callBack.getSavedList()));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.d("SavedListTabFragment", "onPause");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.d("SavedListTabFragment", "onStop");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Log.d("SavedListTabFragment", "onDestroyView");
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("SavedListTabFragment", "onDestroy");
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        Log.d("SavedListTabFragment", "onDetach");
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d("SavedListTabFragment", "onCreate");
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.d("SavedListTabFragment", "onViewCreated");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.d("SavedListTabFragment", "onStart");
     }
 }

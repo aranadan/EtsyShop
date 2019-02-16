@@ -112,7 +112,7 @@ public class ListActivity extends AppCompatActivity implements MvpView, CallInte
         return presenter;
     }
 
-    @Override
+    /*@Override
     public void onSavedItemClick(ActiveResult item, String urlPhoto) {
         Intent intent = new Intent(ListActivity.this, ItemDetailsActivity.class);
         intent.putExtra("price", item.getPrice());
@@ -122,7 +122,7 @@ public class ListActivity extends AppCompatActivity implements MvpView, CallInte
         intent.putExtra("listingId", item.getListingId());
         intent.putExtra("photo_url",urlPhoto);
         startActivity(intent);
-    }
+    }*/
 
 
 }

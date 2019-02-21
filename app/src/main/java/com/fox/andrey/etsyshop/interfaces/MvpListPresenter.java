@@ -6,7 +6,6 @@ public interface MvpListPresenter {
     boolean isDownloading();
     void resetOffset();
     void makeOffset();
-    void getLocalList();
     void getActiveList(String category, String searchText);
 
 }

@@ -22,7 +22,7 @@ public class ListPresenter implements MvpListPresenter {
     private int offset = 0;
     private final int offsetCount = 25;
 
-    ListPresenter(String category, String searchText) {
+    public ListPresenter(String category, String searchText) {
         getActiveList(category, searchText);
     }
 
@@ -35,14 +35,6 @@ public class ListPresenter implements MvpListPresenter {
         Log.d(TAG, "makeOffset");
         offset = offset + offsetCount;
     }
-
-    // TODO: 09.01.2019 отобразить локальный список при повороте экрана
-    @Override
-    public void getLocalList() {
-        Log.d(TAG, "get date from storage " + results.size());
-        refreshMethod();
-    }
-
 
     //получаю результат из сети
     public void getActiveList(String category, String searchText) {
@@ -61,7 +53,6 @@ public class ListPresenter implements MvpListPresenter {
                     getNewData();
                     isDownloadNewData = false;
                 });
-
     }
 
     private void getNewData() {
@@ -71,6 +62,7 @@ public class ListPresenter implements MvpListPresenter {
     }
 
     public boolean isDownloading() {
+        Log.d(TAG, "isDownloading");
         return isDownloadNewData;
     }
 
@@ -79,6 +71,7 @@ public class ListPresenter implements MvpListPresenter {
         listActivity.activeResults.clear();
         listActivity.activeResults.addAll(results);
         listActivity.mAdapter.notifyDataSetChanged();
+        Log.d(TAG, "refreshMethod");
     }
 
     //пагинация списка
@@ -87,17 +80,20 @@ public class ListPresenter implements MvpListPresenter {
         int oldArraySize = listActivity.activeResults.size();
         listActivity.activeResults.addAll(results);
         listActivity.mAdapter.notifyItemRangeInserted(oldArraySize, offsetCount);
+        Log.d(TAG, "paginationMethod");
     }
 
 
     @Override
     public void attachView(MvpView view) {
         this.listActivity = (ListActivity) view;
-
+        refreshMethod();
+        Log.d(TAG, "attachView");
     }
 
     @Override
     public void detachView() {
         listActivity = null;
+        Log.d(TAG, "detachView");
     }
 }

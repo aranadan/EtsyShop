@@ -1,6 +1,5 @@
 package com.fox.andrey.etsyshop;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -21,7 +20,6 @@ public class ListActivity extends AppCompatActivity implements MvpView, CallInte
     private SwipeRefreshLayout mSwipeRefreshLayout;
     protected RecyclerView.Adapter mAdapter;
     ArrayList<ActiveResult> activeResults;
-
 
     String category;
     String searchText;
@@ -51,7 +49,8 @@ public class ListActivity extends AppCompatActivity implements MvpView, CallInte
         mRecyclerView.setHasFixedSize(true);
 
         // менеджер компоновки для управления позиционированием своих элементов
-        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 1);
+        GridLayoutManager mLayoutManager = new GridLayoutManager(this, 2);
+
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //слушатель на прокрутку списка
@@ -102,7 +101,8 @@ public class ListActivity extends AppCompatActivity implements MvpView, CallInte
 
         if (presenter == null) {
             presenter = new ListPresenter(category, searchText);
-        }else presenter.getLocalList();
+            Log.d(TAG,"created new presenter");
+        }
         presenter.attachView(this);
     }
 

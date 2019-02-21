@@ -13,9 +13,6 @@ import static com.fox.andrey.etsyshop.data.DbContract.ItemsEntry.*;
 public class ItemDetailsPresenter implements MvpPresenter {
     private ItemDetailsActivity view;
     private DbHelper mDbHelper;
-    private SQLiteDatabase db;
-
-
 
 
     @Override
@@ -32,7 +29,7 @@ public class ItemDetailsPresenter implements MvpPresenter {
     @Override
     public void addData(int id) {
         // получаем базу
-        db = mDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         // Создаем объект ContentValues, где имена столбцов ключи,
         // а информация о является значениями ключей
@@ -51,7 +48,7 @@ public class ItemDetailsPresenter implements MvpPresenter {
             // Если ID  -1, значит произошла ошибка
             Toast.makeText(view, "Ошибка при заведении карточки", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(view, "Карточка заведена под номером: " + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(view, "Карточка добавлена в Ваш список.",Toast.LENGTH_SHORT).show();
         }
     }
 

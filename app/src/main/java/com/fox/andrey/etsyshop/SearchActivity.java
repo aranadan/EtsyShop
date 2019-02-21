@@ -6,7 +6,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.fox.andrey.etsyshop.interfaces.CallBackSavedItemsTab;
 import com.fox.andrey.etsyshop.interfaces.CallBackSearchTab;
@@ -29,6 +28,7 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
 
         //загрузка фрагментов по выбору пользователя
         tabLayout = findViewById(R.id.tabs);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -106,4 +106,15 @@ public class SearchActivity extends AppCompatActivity implements  MvpView, CallI
         fragmentTransaction.commit();
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("tabPosition", tabLayout.getSelectedTabPosition());
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        tabLayout.setScrollPosition(savedInstanceState.getInt("tabPosition",0),0f,true);
+    }
 }

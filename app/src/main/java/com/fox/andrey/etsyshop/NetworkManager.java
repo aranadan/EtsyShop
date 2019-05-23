@@ -25,7 +25,6 @@ class NetworkManager {
         //создаем HttpLoggingInterceptor. В нем настраиваем уровень логирования. Если у нас Debug билд, то выставляем максимальный уровень (BODY), иначе - ничего не логируем, чтобы не палить в логах релизные запросы.
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(BuildConfig.DEBUG ? HttpLoggingInterceptor.Level.BODY : HttpLoggingInterceptor.Level.NONE);
-
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
 
         Retrofit retrofit = new Retrofit.Builder().

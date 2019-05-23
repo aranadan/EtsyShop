@@ -2,10 +2,10 @@ package com.fox.andrey.etsyshop;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.fox.andrey.etsyshop.interfaces.CallBackSavedItemsTab;
 import com.fox.andrey.etsyshop.interfaces.CallBackSearchTab;

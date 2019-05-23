@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".ItemDetailsActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="0dp">
@@ -116,5 +116,5 @@
             app:layout_constraintTop_toBottomOf="@+id/divider"
             tools:text="💫 Make that extra special memory come to life with our personalised bespoke star maps and view the sky as it was, or will be, at that location, at your chosen moment. This could be for a birthday, anniversary, graduation or any other moment/event you had in mind! 💫\n\nSimply provide us with the date and location of the event along with any other personalisation you would like ie. names or greetings. We will use specialist astronomy software to pinpoint the night sky on that specific date/moment! \n\n✅ Provide a time, date and location that you would like us to use. (past or present)\n✅ Provide any personalisation you would like ie. names/greetings etc - we can amend all details on our star maps.\n✅ Sit back and relax! we use specialist astronomy software to pinpoint the night sky at your exact chosen moment. your item is then designed and promptly printed and processed.\n\nOur Personalised star maps are printed on a high quality 280gsm satin resin photo paper to ensure your print lasts for a long time. Our high quality photo frames are wooden and handmade in the UK. We can provide either a white or black frame. Please let us know which! (black will be sent by default if not)" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

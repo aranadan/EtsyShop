@@ -1,8 +1,9 @@
 package com.fox.andrey.etsyshop;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,26 +17,29 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     private ArrayList<ActiveResult> mList;
-    public static final String TAG = "ListAdapter";
+    private static final String TAG = "ListAdapter";
     private NetworkManager networkManager;
     private Activity mActivity;
 
     // Определяю элементы представления
-    public static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.textView)
         TextView mTextView;
+        @BindView(R.id.imageView)
         ImageView mImageView;
 
         MyViewHolder(View v) {
             super(v);
-            Log.d(TAG, "MyViewHolder");
-            mTextView = v.findViewById(R.id.textView);
-            mImageView = v.findViewById(R.id.imageView);
+            //Log.d(TAG, "MyViewHolder");
+            ButterKnife.bind(this,v);
         }
     }
 
@@ -47,8 +51,9 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
     }
 
     //указываю макет для каждого элемента RecyclerView. Затем LayoutInflater заполняет макет, и передает его в конструктор ViewHolder.
+    @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         Log.d(TAG, "onCreateViewHolder");
         // create a new view
@@ -59,7 +64,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> {
 
     //устанавливаю значения полей
     @Override
-    public void onBindViewHolder(MyViewHolder viewHolder, int i) {
+    public void onBindViewHolder(@NonNull MyViewHolder viewHolder, int i) {
         Observable<ImagesResult> imagesList;
         ActiveResult item = mList.get(i);
         AtomicReference<String> urlPhoto = new AtomicReference<>();

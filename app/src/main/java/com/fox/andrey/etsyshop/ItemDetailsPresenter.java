@@ -14,7 +14,6 @@ public class ItemDetailsPresenter implements MvpPresenter {
     private ItemDetailsActivity view;
     private DbHelper mDbHelper;
 
-
     @Override
     public void attachView(MvpView view) {
         this.view = (ItemDetailsActivity) view;
